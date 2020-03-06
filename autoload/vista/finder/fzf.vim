@@ -72,7 +72,7 @@ function! vista#finder#fzf#extract(line) abort
     let icon_stripped = icon_tag_lnum
   end
 
-  let items = matchlist(icon_stripped, '\([a-zA-Z:#_.,<>]*\):\(\d\+\)')
+  let items = matchlist(icon_stripped, '\(\d\+\):\([a-zA-Z:#_.,<>]*\)')
   let tag = items[1]
   let lnum = items[2]
 
@@ -161,10 +161,10 @@ function! vista#finder#fzf#Highlight() abort
     let idx += 1
   endfor
 
-  execute 'syntax match FZFVistaTag    /\s*.*\(:\d\)\@=/' 'contains=FZFVistaIcon,'.join(icon_groups, ',')
-  execute 'syntax match FZFVistaNumber /^[^\[]*\(\s\s\[\)\@=/' 'contains=FZFVistaTag,FZFVistaIcon,'.join(icon_groups, ',')
-  syntax match FZFVistaScope  /^[^]]*]/ contains=FZFVistaNumber,FZFVistaBracket
-  syntax match FZFVista /^[^│┌└]*/ contains=FZFVistaBracket,FZFVistaTag,FZFVistaNumber,FZFVistaScope
+  execute 'syntax match FZFVistaNumber /\s*\zs\d*\ze:\w/' 'contains=FZFVistaIcon,'.join(icon_groups, ',')
+  execute 'syntax match FZFVistaTag    /^[^\[]*\(\[\)\@=/' 'contains=FZFVistaNumber,FZFVistaIcon,'.join(icon_groups, ',')
+  syntax match FZFVistaScope  /^[^]]*]/ contains=FZFVistaTag,FZFVistaBracket
+  syntax match FZFVista /^[^│┌└]*/ contains=FZFVistaBracket,FZFVistaNumber,FZFVistaTag,FZFVistaScope
   syntax match FZFVistaBracket /\s\s\[\|\]\s\s/ contained
 
   hi default link FZFVistaBracket  SpecialKey
